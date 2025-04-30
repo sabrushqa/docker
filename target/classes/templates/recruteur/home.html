@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Accueil Recruteur</title>
+  <link rel="stylesheet" th:href="@{/css/styles.css}" />
+</head>
+<body>
+<h1>Bienvenue, <span th:text="${recruteur.nom}">Nom</span> !</h1>
+
+<p>Email : <strong th:text="${recruteur.user.email}">email@example.com</strong></p>
+<a th:href="@{/recruteur/offres/nouvelle}">
+  <button>Créer une nouvelle offre</button>
+</a>
+<a th:href="@{/recruteur/offres/mes-offres}">
+  <button>Voir mes offres publiées</button>
+</a>
+<form th:action="@{/logout}" method="post">
+  <button type="submit">Se déconnecter</button>
+</form>
+</body>
+</html>
