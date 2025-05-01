@@ -14,8 +14,6 @@ public class Candidat {
 
     private String nom;
 
-    private String email;
-
     private String prenom;
     private String telephone;
     private String adresse;
@@ -27,7 +25,6 @@ public class Candidat {
     @Lob
     @Basic(fetch = FetchType.EAGER) // 🔥 important !
     private String description;
-
 
     @Transient
     private String confirmPassword;
@@ -90,9 +87,6 @@ public class Candidat {
         return diplome;
     }
 
-    public String getEmail() {
-        return email;
-    }
 
     public void setDiplome(String diplome) {
         this.diplome = diplome;

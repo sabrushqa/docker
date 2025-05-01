@@ -1,6 +1,8 @@
 package com.example.demo.service;
 
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
@@ -13,20 +15,39 @@ import jakarta.mail.internet.MimeMessage;
 public class EmailService {
 
     private final JavaMailSender mailSender;
+    private static final Logger logger = LoggerFactory.getLogger(EmailService.class);
 
     public void sendEmail(String to, String subject, String body) throws MessagingException {
+        logger.info("Tentative d'envoi d'email à: {}, sujet: {}", to, subject);
+
         MimeMessage message = mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
 
-        helper.setTo(to);
-        helper.setSubject(subject);
-        helper.setText(body, true);
+        try {
+            helper.setTo(to);
+            helper.setSubject(subject);
+            helper.setText(body, true);
 
-        mailSender.send(message);
+            // Ajouter un expéditeur par défaut si ce n'est pas déjà configuré
+            try {
+                helper.setFrom("noreply@votredomaine.com");
+            } catch (Exception e) {
+                logger.warn("Impossible de définir l'expéditeur par défaut: {}", e.getMessage());
+                // On continue quand même, au cas où l'expéditeur est déjà configuré par défaut
+            }
+
+            logger.info("Email préparé, tentative d'envoi...");
+            mailSender.send(message);
+            logger.info("Email envoyé avec succès à {}", to);
+        } catch (Exception e) {
+            logger.error("Erreur lors de l'envoi de l'email: {}", e.getMessage(), e);
+            throw e; // Propager l'exception pour que l'appelant sache qu'il y a eu un problème
+        }
     }
 
     public void sendInterviewConfirmation(String to, String candidateName, String recruiterName,
                                           String position, String date, String time, String zoomLink) throws MessagingException {
+        logger.info("Préparation de l'email de confirmation d'entretien pour: {}", to);
         String subject = "Confirmation d'entretien pour le poste de " + position;
 
         String htmlBody =

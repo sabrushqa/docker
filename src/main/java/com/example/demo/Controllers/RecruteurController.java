@@ -47,23 +47,29 @@ public class RecruteurController {
         return "recruteur/candidatures_offres";
     }
 
+
     @PostMapping("/recruteur/candidatures/modifier/{id}")
     public String modifierCandidature(@PathVariable Long id,
                                       @RequestParam("statut") String statut,
                                       @RequestParam(value = "matchingScore", required = false) Double matchingScore) throws MessagingException {
 
-        Candidature candidature = candidatureService.getById(id);
+        Candidature candidature = candidatureService.getById(id); // ✅ Variable bien définie ici
         if (candidature != null) {
             candidature.setStatut(statut);
             candidature.setMatchingScore(matchingScore);
 
             if ("Acceptée".equalsIgnoreCase(statut)) {
-                entretienService.envoyerLienZoomPourEntretien(candidature);
+                // ✅ Récupération de l'email depuis le User lié au candidat
+                String email = candidature.getCandidat().getUser().getEmail();
+
+                // ✅ Appel correct avec les deux arguments requis
+                entretienService.envoyerLienZoomPourEntretien(candidature, email);
             }
         }
 
         return "redirect:/recruteur/candidatures";
     }
+
 
 
 

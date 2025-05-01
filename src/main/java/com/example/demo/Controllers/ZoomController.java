@@ -1,5 +1,6 @@
 package com.example.demo.Controllers;
 
+import com.example.demo.Repository.CandidatRepository;
 import com.example.demo.model.Candidat;
 import com.example.demo.model.Candidature;
 import com.example.demo.model.Entretien;
@@ -7,11 +8,12 @@ import com.example.demo.service.CandidatureService;
 import com.example.demo.service.EmailService;
 import com.example.demo.utils.ZoomApiUtil;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
+import java.security.Principal;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Optional;
@@ -23,17 +25,24 @@ public class ZoomController {
 
     private final EmailService emailService;
     private final CandidatureService candidatureService;
+    private final CandidatRepository candidatRepository;
+
     private final ZoomApiUtil zoomApiUtil;
     private final com.example.demo.repository.EntretienRepository entretienRepository;
 
-
     @PostMapping("/sendZoomLink/{candidatureId}")
-    public String sendZoomLink(@PathVariable Long candidatureId) {
+    public String sendZoomLink(@PathVariable Long candidatureId, Principal principal) {
+        String emailConnecte = principal.getName();
+
+        Optional<Candidat> optionalCandidat = candidatRepository.findByUserEmail(emailConnecte);
+        if (optionalCandidat.isEmpty()) {
+            return "Candidat non trouvé pour l'utilisateur connecté.";
+        }
+
+        Candidat candidat = optionalCandidat.get();
         Candidature candidature = candidatureService.getById(candidatureId);
 
         if (candidature != null && "Acceptée".equalsIgnoreCase(candidature.getStatut())) {
-            Candidat candidat = candidature.getCandidat();
-
             Optional<Entretien> optionalEntretien = entretienRepository.findByCandidature(candidature);
             if (optionalEntretien.isEmpty()) {
                 return "Aucun entretien trouvé pour cette candidature.";
@@ -43,7 +52,7 @@ public class ZoomController {
             LocalDateTime entretienDateTime = entretien.getDateEntretien();
 
             String candidateName = candidat.getNom();
-            String candidateEmail = "Sabrenalakehal12@gmail.com";
+            String candidateEmail = candidat.getUser().getEmail();  // ✅ Email récupéré depuis le user
             String recruiterName = "ATOS";
             String position = candidat.getSpecialite();
 
@@ -52,7 +61,6 @@ public class ZoomController {
                 return "Erreur lors de la création de la réunion Zoom.";
             }
 
-            // Formatage pour l'email
             String formattedDate = entretienDateTime.toLocalDate().format(DateTimeFormatter.ofPattern("dd-MM-yyyy"));
             String formattedTime = entretienDateTime.toLocalTime().format(DateTimeFormatter.ofPattern("HH:mm"));
 
@@ -62,7 +70,6 @@ public class ZoomController {
                         formattedDate, formattedTime, zoomLink
                 );
 
-                // Sauvegarder le lien Zoom dans la base
                 entretien.setLienZoom(zoomLink);
                 entretienRepository.save(entretien);
 
@@ -74,8 +81,6 @@ public class ZoomController {
 
         return "Candidature non trouvée ou statut non 'Acceptée'.";
     }
-
-
     @GetMapping("/callback")
     public String handleZoomCallback(@RequestParam("code") String code) {
         return "Authentification Zoom réussie avec le code : " + code;
