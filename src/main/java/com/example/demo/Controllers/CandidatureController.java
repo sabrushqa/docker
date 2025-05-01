@@ -67,7 +67,7 @@ public class CandidatureController {
         candidatureService.save(candidature);
 
         // Rediriger vers la page "mes-candidatures" du candidat après soumission
-        return "redirect:/candidatures/mes-candidatures";
+        return "redirect:/candidatures/mes_candidatures";
     }
 
     // Méthode pour sauvegarder le CV sur le serveur
@@ -104,7 +104,7 @@ public class CandidatureController {
     }
 
     // Afficher toutes les candidatures du candidat connecté
-    @GetMapping("/mes-candidatures")
+    @GetMapping("/mes_candidatures")
     public String voirMesCandidatures(Model model,
                                       @AuthenticationPrincipal UserDetails userDetails) {
         String email = userDetails.getUsername();
@@ -114,7 +114,8 @@ public class CandidatureController {
         var candidatures = candidatureService.findByCandidat(candidat);
 
         model.addAttribute("candidatures", candidatures);
-        return "candidat/mes_candidatures";  // Vue Thymeleaf à créer
+        return "candidat/mescandidatures";  // Vue Thymeleaf à créer
     }
+
 
 }

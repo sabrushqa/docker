@@ -68,18 +68,8 @@ public class CandidatController {
 
 
 
-    @GetMapping("/mes-candidatures")
-    public String afficherCandidatures(Model model, @RequestParam String emailCandidat) {
-        // Récupérer le candidat par son email
-        Candidat candidat = candidatService.getCandidatByEmail(emailCandidat);
 
-        // Récupérer les candidatures du candidat
-        List<Candidature> candidatures = candidatService.getCandidaturesByCandidat(candidat);
-
-        // Ajouter les candidatures au modèle pour affichage
-        model.addAttribute("candidatures", candidatures);
 
         // Retourner la vue pour afficher les candidatures
-        return "candidat/mes-candidatures";  // Thymeleaf template mes-candidatures.html
-    }
+
 }
