@@ -18,6 +18,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Controller
@@ -61,10 +62,10 @@ public class CandidatureController {
 
         candidatureService.save(candidature);
 
-        return "redirect:/offres";
+        // Rediriger vers la page "mes-candidatures" du candidat après soumission
+        return "redirect:/candidatures/mes-candidatures";
     }
 
-    // Méthode de sauvegarde du fichier CV
     private String saveCv(MultipartFile cv) throws IOException {
         if (cv.isEmpty()) {
             throw new IOException("Le fichier CV est vide");
@@ -89,6 +90,8 @@ public class CandidatureController {
         cv.transferTo(path);
         return "/cvs/" + uniqueFileName;
     }
+
+
     // Afficher toutes les candidatures du candidat connecté
     @GetMapping("/mes-candidatures")
     public String voirMesCandidatures(Model model,

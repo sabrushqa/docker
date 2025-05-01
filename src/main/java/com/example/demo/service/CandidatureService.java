@@ -15,9 +15,6 @@ public class CandidatureService {
     private final CandidatureRepository candidatureRepository;
 
     // Récupérer toutes les candidatures d'un recruteur via son email
-    public List<Candidature> getByRecruteurEmail(String email) {
-        return candidatureRepository.findByRecruteurUserEmail(email);
-    }
 
     // Récupérer une candidature par son ID
     public Candidature getById(Long id) {
