@@ -3,6 +3,7 @@ package com.example.demo.service;
 import com.example.demo.model.Candidat;
 import com.example.demo.model.Candidature;
 import com.example.demo.Repository.CandidatureRepository;
+import com.example.demo.model.Recruteur;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -32,5 +33,9 @@ public class CandidatureService {
     public List<Candidature> findByCandidat(Candidat candidat) {
         return candidatureRepository.findByCandidat(candidat);
     }
+    public List<Candidature> getCandidaturesByRecruteur(Recruteur recruteur) {
+        return candidatureRepository.findByOffre_Recruteur(recruteur);
+    }
+
 
 }

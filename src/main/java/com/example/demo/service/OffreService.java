@@ -1,5 +1,6 @@
 package com.example.demo.service;
 
+import com.example.demo.model.Candidature;
 import com.example.demo.model.Offre;
 import com.example.demo.model.Recruteur;
 import com.example.demo.Repository.OffreRepository;
@@ -41,6 +42,8 @@ public class OffreService {
     public Optional<Offre> findById(Long id) {
         return offreRepository.findById(id);
     }
+
+
 
 
 
