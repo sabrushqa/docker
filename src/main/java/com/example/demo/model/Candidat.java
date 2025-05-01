@@ -1,9 +1,11 @@
 package com.example.demo.model;
 
 import jakarta.persistence.*;
+import lombok.Data;
 
 @Entity
 @Table(name = "candidats")
+@Data
 public class Candidat {
 
     @Id
@@ -11,6 +13,9 @@ public class Candidat {
     private Long id;
 
     private String nom;
+
+    private String email;
+
     private String prenom;
     private String telephone;
     private String adresse;
@@ -83,6 +88,10 @@ public class Candidat {
 
     public String getDiplome() {
         return diplome;
+    }
+
+    public String getEmail() {
+        return email;
     }
 
     public void setDiplome(String diplome) {

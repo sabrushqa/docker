@@ -1,11 +1,14 @@
 package com.example.demo.model;
 
-
 import jakarta.persistence.*;
+import lombok.Data;
+import org.jetbrains.annotations.NotNull;
+
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "candidatures")
+@Data
 public class Candidature {
 
     @Id
@@ -24,6 +27,7 @@ public class Candidature {
 
     // 📅 Date et heure de la candidature
     @Column(nullable = false)
+    @NotNull
     private LocalDateTime dateCandidature;
 
     // 📌 Statut de la candidature : En attente, Acceptée, Refusée...
@@ -37,87 +41,18 @@ public class Candidature {
     // 📎 URL ou chemin du CV
     private String cvUrl;
 
-
-
-
     // 🤖 Score IA de correspondance entre candidat et offre (calcul automatique)
     private Double matchingScore;
+    private String cv;
 
-    // ✅ Constructeur par défaut
+    // 📅 Date et heure de l'entretien
+    private LocalDateTime dateEntretien;
+
+    // 📎 Lien Zoom pour l'entretien
+    private String lienZoom;
+
     public Candidature() {
-        this.dateCandidature = LocalDateTime.now();
-        this.statut = "En attente";
+        this.dateCandidature = LocalDateTime.now();  // Définit la date actuelle
     }
 
-    // ✅ Getters et Setters
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Offre getOffre() {
-        return offre;
-    }
-
-    public void setOffre(Offre offre) {
-        this.offre = offre;
-    }
-
-    public Candidat getCandidat() {
-        return candidat;
-    }
-
-    public void setCandidat(Candidat candidat) {
-        this.candidat = candidat;
-    }
-
-    public LocalDateTime getDateCandidature() {
-        return dateCandidature;
-    }
-
-    public void setDateCandidature(LocalDateTime dateCandidature) {
-        this.dateCandidature = dateCandidature;
-    }
-
-    public String getStatut() {
-        return statut;
-    }
-
-    public void setStatut(String statut) {
-        this.statut = statut;
-    }
-
-    public String getLettreMotivation() {
-        return lettreMotivation;
-    }
-
-    public void setLettreMotivation(String lettreMotivation) {
-        this.lettreMotivation = lettreMotivation;
-    }
-
-    public String getCvUrl() {
-        return cvUrl;
-    }
-
-    public void setCvUrl(String cvUrl) {
-        this.cvUrl = cvUrl;
-    }
-
-
-
-
-
-
-    public Double getMatchingScore() {
-        return matchingScore;
-    }
-
-    public void setMatchingScore(Double matchingScore) {
-        this.matchingScore = matchingScore;
-    }
 }
-

@@ -45,7 +45,8 @@
                 </select>
 
                 <input type="number" name="matchingScore" step="0.1" min="0" max="100"
-                       th:value="${candidature.matchingScore}" />
+                       th:value="${candidature.matchingScore != null ? candidature.matchingScore : ''}" />
+
 
                 <button type="submit">Mettre à jour</button>
             </form>

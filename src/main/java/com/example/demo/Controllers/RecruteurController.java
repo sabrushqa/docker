@@ -3,13 +3,18 @@ package com.example.demo.Controllers;
 import com.example.demo.model.Candidature;
 import com.example.demo.model.Recruteur;
 import com.example.demo.service.CandidatureService;
+import com.example.demo.service.EntretienService;
 import com.example.demo.service.RecruteurService;
+import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
@@ -19,6 +24,8 @@ public class RecruteurController {
 
     private final RecruteurService recruteurService;
     private final CandidatureService candidatureService;
+    private final EntretienService entretienService;
+
 
     @GetMapping("/recruteur/home")
     public String home(@AuthenticationPrincipal UserDetails userDetails, Model model) {
@@ -39,4 +46,25 @@ public class RecruteurController {
 
         return "recruteur/candidatures_offres";
     }
+
+    @PostMapping("/recruteur/candidatures/modifier/{id}")
+    public String modifierCandidature(@PathVariable Long id,
+                                      @RequestParam("statut") String statut,
+                                      @RequestParam(value = "matchingScore", required = false) Double matchingScore) throws MessagingException {
+
+        Candidature candidature = candidatureService.getById(id);
+        if (candidature != null) {
+            candidature.setStatut(statut);
+            candidature.setMatchingScore(matchingScore);
+
+            if ("Acceptée".equalsIgnoreCase(statut)) {
+                entretienService.envoyerLienZoomPourEntretien(candidature);
+            }
+        }
+
+        return "redirect:/recruteur/candidatures";
+    }
+
+
+
 }
