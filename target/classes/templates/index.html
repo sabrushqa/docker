@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Générateur de CV</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans&family=Roboto&display=swap" rel="stylesheet">
+    <link th:href="@{/css/style.css}" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <div class="form-section">
+            <h1>Créez votre CV</h1>
+            <form id="cvForm" th:action="@{/generate-cv}" th:object="${cvForm}" method="post">
+                <!-- Informations personnelles -->
+                <div class="form-group">
+                    <h2>Informations personnelles</h2>
+                    <div class="input-with-emoji">
+                        <input type="text" id="fullName" th:field="*{fullName}" placeholder="Nom complet" required>
+                        <button type="button" class="emoji-trigger" data-target="fullName" data-default="👤">👤</button>
+                    </div>
+                    <div class="input-with-emoji">
+                        <input type="email" id="email" th:field="*{email}" placeholder="Email" required>
+                        <button type="button" class="emoji-trigger" data-target="email" data-default="📧">📧</button>
+                    </div>
+                    <div class="input-with-emoji">
+                        <input type="tel" id="phone" th:field="*{phone}" placeholder="Téléphone">
+                        <button type="button" class="emoji-trigger" data-target="phone" data-default="📞">📞</button>
+                    </div>
+                    <div class="input-with-emoji">
+                        <input type="text" id="location" th:field="*{location}" placeholder="Localisation">
+                        <button type="button" class="emoji-trigger" data-target="location" data-default="📍">📍</button>
+                    </div>
+                    <input type="file" id="photo" name="photo" accept="image/*">
+                </div>
+
+                <!-- Résumé -->
+                <div class="form-group">
+                    <h2>Résumé professionnel</h2>
+                    <div class="input-with-emoji">
+                        <textarea id="summary" th:field="*{summary}" rows="4" placeholder="Bref résumé de votre profil"></textarea>
+                        <button type="button" class="emoji-trigger" data-target="summary" data-default="📝">📝</button>
+                    </div>
+                </div>
+
+                <!-- Expérience -->
+                <div class="form-group" id="experienceContainer">
+                    <h2>Expérience professionnelle</h2>
+                    <div th:each="experience, stat : *{experiences}" class="experience-entry">
+                        <div class="input-with-emoji">
+                            <input type="text" th:field="*{experiences[__${stat.index}__].title}" placeholder="Titre du poste">
+                            <button type="button" class="emoji-trigger" data-target="experience-title" data-default="💼">💼</button>
+                        </div>
+                        <div class="input-with-emoji">
+                            <input type="text" th:field="*{experiences[__${stat.index}__].company}" placeholder="Entreprise">
+                            <button type="button" class="emoji-trigger" data-target="experience-company" data-default="🏢">🏢</button>
+                        </div>
+                        <input type="text" th:field="*{experiences[__${stat.index}__].location}" placeholder="Localisation">
+                        <input type="date" th:field="*{experiences[__${stat.index}__].startDate}" placeholder="Date de début">
+                        <input type="date" th:field="*{experiences[__${stat.index}__].endDate}" placeholder="Date de fin">
+                        <div class="input-with-emoji">
+                            <textarea th:field="*{experiences[__${stat.index}__].description}" placeholder="Description des responsabilités"></textarea>
+                            <button type="button" class="emoji-trigger" data-target="experience-description" data-default="📋">📋</button>
+                        </div>
+                    </div>
+                    <button type="button" class="add-btn" onclick="addExperience()">+ Ajouter une expérience</button>
+                </div>
+
+                <!-- Formation -->
+                <div class="form-group" id="educationContainer">
+                    <h2>Formation</h2>
+                    <div th:each="education, stat : *{educations}" class="education-entry">
+                        <div class="input-with-emoji">
+                            <input type="text" th:field="*{educations[__${stat.index}__].degree}" placeholder="Diplôme">
+                            <button type="button" class="emoji-trigger" data-target="education-degree" data-default="🎓">🎓</button>
+                        </div>
+                        <div class="input-with-emoji">
+                            <input type="text" th:field="*{educations[__${stat.index}__].school}" placeholder="École">
+                            <button type="button" class="emoji-trigger" data-target="education-school" data-default="🏫">🏫</button>
+                        </div>
+                        <input type="text" th:field="*{educations[__${stat.index}__].location}" placeholder="Localisation">
+                        <input type="date" th:field="*{educations[__${stat.index}__].startDate}" placeholder="Date de début">
+                        <input type="date" th:field="*{educations[__${stat.index}__].endDate}" placeholder="Date de fin">
+                        <div class="input-with-emoji">
+                            <textarea th:field="*{educations[__${stat.index}__].description}" placeholder="Description"></textarea>
+                            <button type="button" class="emoji-trigger" data-target="education-description" data-default="📚">📚</button>
+                        </div>
+                    </div>
+                    <button type="button" class="add-btn" onclick="addEducation()">+ Ajouter une formation</button>
+                </div>
+
+                <!-- Skills section -->
+                <div class="form-group" id="skillsContainer">
+                    <h2>Compétences</h2>
+                    <div th:each="skill, stat : *{skills}" class="skills-entry">
+                        <div class="input-with-emoji">
+                            <input type="text" th:field="*{skills[__${stat.index}__].name}" placeholder="Compétence">
+                            <button type="button" class="emoji-trigger" data-target="skill" data-default="⭐">⭐</button>
+                        </div>
+                        <select th:field="*{skills[__${stat.index}__].level}">
+                            <option value="expert">Expert</option>
+                            <option value="avance">Avancé</option>
+                            <option value="intermediaire">Intermédiaire</option>
+                            <option value="debutant">Débutant</option>
+                        </select>
+                    </div>
+                    <button type="button" class="add-btn" onclick="addSkill()">+ Ajouter une compétence</button>
+                </div>
+
+                <!-- Langues -->
+                <div class="form-group" id="languagesContainer">
+                    <h2>Langues</h2>
+                    <div th:each="language, stat : *{languages}" class="language-entry">
+                        <div class="input-with-emoji">
+                            <input type="text" th:field="*{languages[__${stat.index}__].name}" placeholder="Langue">
+                            <button type="button" class="emoji-trigger" data-target="language" data-default="🗣️">🗣️</button>
+                        </div>
+                        <select th:field="*{languages[__${stat.index}__].level}">
+                            <option value="debutant">Débutant</option>
+                            <option value="intermediaire">Intermédiaire</option>
+                            <option value="avance">Avancé</option>
+                            <option value="bilingue">Bilingue</option>
+                        </select>
+                    </div>
+                    <button type="button" class="add-btn" onclick="addLanguage()">+ Ajouter une langue</button>
+                </div>
+
+                <!-- Personnalisation -->
+                <div class="form-group">
+                    <h2>Personnalisation</h2>
+                    <div class="customization-options">
+                        <div class="color-picker">
+                            <input type="color" id="themeColor" th:field="*{themeColor}" value="#1e88e5">
+                            <label for="themeColor">Couleur du thème</label>
+                        </div>
+                        <div class="font-picker">
+                            <select id="fontFamily" th:field="*{fontFamily}" onchange="updateFont(this.value)">
+                                <option value="Roboto">Roboto</option>
+                                <option value="Open Sans">Open Sans</option>
+                            </select>
+                            <label for="fontFamily">Police d'écriture</label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Boutons d'export -->
+                <div class="export-buttons">
+                    <button type="submit" class="btn-primary">Générer CV</button>
+                    <button type="button" onclick="window.print()" class="btn-secondary">Imprimer</button>
+                </div>
+            </form>
+        </div>
+
+        <div class="preview-section">
+            <div id="cvPreview" class="cv-preview" th:fragment="preview">
+                <!-- Le CV sera généré ici -->
+                <div th:if="${cv != null}" th:replace="fragments/cv-preview :: cv(${cv})"></div>
+            </div>
+        </div>
+    </div>
+
+    <emoji-picker id="emojiPicker" class="light"></emoji-picker>
+    <script th:src="@{/js/main.js}" type="module"></script>
+</body>
+</html>

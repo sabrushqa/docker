@@ -1,8 +1,10 @@
 package com.example.demo.Controllers;
 
 import com.example.demo.model.Candidat;
+import com.example.demo.model.Candidature;
 import com.example.demo.model.Offre;
 import com.example.demo.service.CandidatService;
+import com.example.demo.service.CandidatureService;
 import com.example.demo.service.OffreService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
@@ -11,6 +13,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.security.Principal;
 import java.util.List;
 
 @Controller
@@ -59,5 +62,24 @@ public class CandidatController {
     // Méthode utilitaire pour nettoyer les paramètres
     private String clean(String value) {
         return (value != null && !value.trim().isEmpty()) ? value.trim() : null;
+    }
+
+    private final CandidatureService candidatureService; // Injection automatique du service
+
+
+
+    @GetMapping("/mes-candidatures")
+    public String afficherCandidatures(Model model, @RequestParam String emailCandidat) {
+        // Récupérer le candidat par son email
+        Candidat candidat = candidatService.getCandidatByEmail(emailCandidat);
+
+        // Récupérer les candidatures du candidat
+        List<Candidature> candidatures = candidatService.getCandidaturesByCandidat(candidat);
+
+        // Ajouter les candidatures au modèle pour affichage
+        model.addAttribute("candidatures", candidatures);
+
+        // Retourner la vue pour afficher les candidatures
+        return "candidat/mes-candidatures";  // Thymeleaf template mes-candidatures.html
     }
 }

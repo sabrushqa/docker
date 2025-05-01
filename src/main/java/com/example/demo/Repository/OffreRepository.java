@@ -9,6 +9,7 @@ import java.util.List;
 
 public interface OffreRepository extends JpaRepository<Offre, Long> {
     List<Offre> findByRecruteurId(Long recruteurId);
+
     @Query("""
     SELECT o FROM Offre o
     WHERE (:secteur IS NULL OR o.secteur = :secteur)
@@ -16,12 +17,11 @@ public interface OffreRepository extends JpaRepository<Offre, Long> {
     AND (:lieu IS NULL OR o.lieu = :lieu)
     AND (:entreprise IS NULL OR o.recruteur.entreprise = :entreprise)
     ORDER BY o.datePublication DESC
-""")
+    """)
     List<Offre> rechercher(
             @Param("secteur") String secteur,
             @Param("typeContrat") String typeContrat,
             @Param("lieu") String lieu,
             @Param("entreprise") String entreprise
     );
-
 }

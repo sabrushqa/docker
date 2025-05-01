@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -37,6 +38,12 @@ public class OffreService {
     public void supprimerOffre(Long id) {
         offreRepository.deleteById(id);
     }
+    public Optional<Offre> findById(Long id) {
+        return offreRepository.findById(id);
+    }
+
+
+
 
 
 }

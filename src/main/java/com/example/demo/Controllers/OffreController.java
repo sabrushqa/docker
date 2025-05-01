@@ -1,5 +1,6 @@
 package com.example.demo.Controllers;
-
+import com.example.demo.service.OffreService;
+import com.example.demo.model.Candidature;
 import com.example.demo.model.Offre;
 import com.example.demo.model.Recruteur;
 import com.example.demo.service.OffreService;
@@ -35,6 +36,7 @@ public class OffreController {
         offreService.creerOffre(offre, recruteur);
         return "redirect:/recruteur/home";
     }
+
     @GetMapping("/mes-offres")
     public String voirMesOffres(@AuthenticationPrincipal UserDetails userDetails, Model model) {
         Recruteur recruteur = recruteurService.getRecruteurByEmail(userDetails.getUsername());
@@ -42,13 +44,22 @@ public class OffreController {
         model.addAttribute("offres", offres);
         return "recruteur/mes-offres";
     }
+
     @GetMapping("/supprimer/{id}")
     public String supprimerOffre(@PathVariable Long id) {
         offreService.supprimerOffre(id);
         return "redirect:/recruteur/offres/mes-offres";
     }
 
+    private final OffreService OffreService;
 
+    @GetMapping("/{id}")
+    public String afficherDetailOffre(@PathVariable Long id, Model model) {
+        Offre offre = offreService.findById(id)
+                .orElseThrow(() -> new RuntimeException("Offre introuvable"));
+        model.addAttribute("offre", offre);
+        return "candidat/offre-detail";  // Assure-toi que ce fichier existe dans /templates/candidat
+    }
 
     private String[] getSecteurs() {
         return new String[]{"Informatique", "Santé", "Finance", "Éducation", "BTP", "Commerce", "RH"};
