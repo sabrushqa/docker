@@ -18,6 +18,11 @@
 <a th:href="@{/recruteur/candidatures}">
   <button>Voir les candidatures reçues</button>
 </a>
+<li class="nav-item">
+  <a  th:href="@{/recruteur/entretiens}" class="nav-link">
+    <i class="bi bi-calendar-event"></i>
+    Planifier RDV
+  </a>
 
 <form th:action="@{/logout}" method="post">
   <button type="submit">Se déconnecter</button>

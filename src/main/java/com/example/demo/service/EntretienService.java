@@ -4,7 +4,7 @@ import com.example.demo.model.Candidat;
 import com.example.demo.model.Candidature;
 import com.example.demo.model.Entretien;
 import com.example.demo.Repository.CandidatRepository;
-import com.example.demo.repository.EntretienRepository;
+import com.example.demo.Repository.EntretienRepository;
 import com.example.demo.utils.ZoomApiUtil;
 import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;

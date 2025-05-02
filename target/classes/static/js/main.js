@@ -1,8 +1,3 @@
-import './style.css';
-import html2pdf from 'html2pdf.js';
-import TurndownService from 'turndown';
-import 'emoji-picker-element';
-
 // État global du CV
 let cvData = {
   personalInfo: {},
@@ -75,7 +70,7 @@ document.getElementById('cvForm').addEventListener('input', (e) => {
 // Mise à jour des données du CV
 function updateCVData(input) {
   const id = input.id;
-  
+
   if (id === 'themeColor') {
     cvData.themeColor = input.value;
     updateThemeColor(input.value);
@@ -137,8 +132,7 @@ window.addSkill = () => {
     </select>
   `;
   container.insertBefore(entry, container.lastElementChild);
-  
-  // Add emoji trigger event listener to the new button
+
   entry.querySelector('.emoji-trigger').addEventListener('click', (e) => {
     const rect = e.target.getBoundingClientRect();
     picker.style.display = 'block';
@@ -147,7 +141,7 @@ window.addSkill = () => {
     currentInput = e.target.closest('.input-with-emoji').querySelector('input, textarea');
     currentTrigger = e.target;
   });
-  
+
   updateSkills();
 };
 
@@ -157,11 +151,11 @@ function updateSkills() {
     const skillInput = entry.querySelector('input');
     const levelSelect = entry.querySelector('select');
     const emojiTrigger = entry.querySelector('.emoji-trigger');
-    
+
     if (!skillInput || !levelSelect || !skillInput.value) {
       return null;
     }
-    
+
     return {
       skill: `${emojiTrigger.textContent} ${skillInput.value}`,
       level: levelSelect.value
@@ -200,8 +194,7 @@ window.addExperience = () => {
     </div>
   `;
   container.insertBefore(entry, container.lastElementChild);
-  
-  // Add emoji trigger event listeners to the new buttons
+
   entry.querySelectorAll('.emoji-trigger').forEach(trigger => {
     trigger.addEventListener('click', (e) => {
       const rect = e.target.getBoundingClientRect();
@@ -237,8 +230,7 @@ window.addEducation = () => {
     </div>
   `;
   container.insertBefore(entry, container.lastElementChild);
-  
-  // Add emoji trigger event listeners to the new buttons
+
   entry.querySelectorAll('.emoji-trigger').forEach(trigger => {
     trigger.addEventListener('click', (e) => {
       const rect = e.target.getBoundingClientRect();
@@ -269,8 +261,7 @@ window.addLanguage = () => {
     </select>
   `;
   container.insertBefore(entry, container.lastElementChild);
-  
-  // Add emoji trigger event listener to the new button
+
   entry.querySelector('.emoji-trigger').addEventListener('click', (e) => {
     const rect = e.target.getBoundingClientRect();
     picker.style.display = 'block';
@@ -281,16 +272,15 @@ window.addLanguage = () => {
   });
 };
 
-// Mise à jour de l'aperçu
 function updatePreview() {
   const preview = document.getElementById('cvPreview');
-  
+
   // Collect experience data
   const experienceEntries = Array.from(document.querySelectorAll('.experience-entry')).map(entry => {
     const titleTrigger = entry.querySelector('[data-target="experience-title"]');
     const companyTrigger = entry.querySelector('[data-target="experience-company"]');
     const descTrigger = entry.querySelector('[data-target="experience-description"]');
-    
+
     return {
       title: `${titleTrigger?.textContent || ''} ${entry.querySelector('input[placeholder="Titre du poste"]')?.value || ''}`,
       company: `${companyTrigger?.textContent || ''} ${entry.querySelector('input[placeholder="Entreprise"]')?.value || ''}`,
@@ -306,7 +296,7 @@ function updatePreview() {
     const degreeTrigger = entry.querySelector('[data-target="education-degree"]');
     const schoolTrigger = entry.querySelector('[data-target="education-school"]');
     const descTrigger = entry.querySelector('[data-target="education-description"]');
-    
+
     return {
       degree: `${degreeTrigger?.textContent || ''} ${entry.querySelector('input[placeholder="Diplôme"]')?.value || ''}`,
       school: `${schoolTrigger?.textContent || ''} ${entry.querySelector('input[placeholder="École"]')?.value || ''}`,
@@ -322,11 +312,11 @@ function updatePreview() {
     const languageInput = entry.querySelector('input');
     const levelSelect = entry.querySelector('select');
     const emojiTrigger = entry.querySelector('.emoji-trigger');
-    
+
     if (!languageInput || !levelSelect || !languageInput.value || !levelSelect.value) {
       return null;
     }
-    
+
     return {
       language: `${emojiTrigger.textContent} ${languageInput.value}`,
       level: levelSelect.value
@@ -409,44 +399,94 @@ function updatePreview() {
       ` : ''}
     </div>
   `;
-}
 
-// Export PDF
-window.generatePDF = async () => {
-  const element = document.getElementById('cvPreview');
-  const opt = {
-    margin: 0,
-    filename: 'mon-cv.pdf',
-    image: { type: 'jpeg', quality: 0.98 },
-    html2canvas: { scale: 2 },
-    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+  // Ajoutez ces scripts dans votre fichier HTML
+// <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+// <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+  window.generatePDF = function() {
+    // Créer un message de chargement
+    const loadingMessage = document.createElement('div');
+    loadingMessage.textContent = 'Génération du PDF en cours...';
+    loadingMessage.style.position = 'fixed';
+    loadingMessage.style.top = '50%';
+    loadingMessage.style.left = '50%';
+    loadingMessage.style.transform = 'translate(-50%, -50%)';
+    loadingMessage.style.padding = '20px';
+    loadingMessage.style.background = 'rgba(0,0,0,0.7)';
+    loadingMessage.style.color = 'white';
+    loadingMessage.style.borderRadius = '5px';
+    loadingMessage.style.zIndex = '9999';
+    document.body.appendChild(loadingMessage);
+
+    // Référence à l'élément CV
+    const element = document.getElementById('cvPreview');
+
+    // Créer une copie du CV pour le PDF
+    const clone = element.cloneNode(true);
+    clone.style.width = '794px'; // Format A4 en pixels
+    clone.style.height = '1123px';
+    clone.style.padding = '40px';
+    clone.style.backgroundColor = 'white';
+    clone.style.position = 'absolute';
+    clone.style.left = '-9999px';
+    clone.style.top = '0';
+    document.body.appendChild(clone);
+
+    // Utiliser html2canvas puis jsPDF
+    html2canvas(clone, {
+      scale: 2,
+      useCORS: true,
+      logging: false,
+      allowTaint: true
+    }).then(canvas => {
+      // Créer le PDF
+      const imgData = canvas.toDataURL('image/jpeg', 1.0);
+      const pdf = new jspdf.jsPDF('p', 'mm', 'a4');
+
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = pdf.internal.pageSize.getHeight();
+      const imgWidth = canvas.width;
+      const imgHeight = canvas.height;
+      const ratio = Math.min(pdfWidth / imgWidth, pdfHeight / imgHeight);
+      const imgX = (pdfWidth - imgWidth * ratio) / 2;
+      const imgY = 0;
+
+      pdf.addImage(imgData, 'JPEG', imgX, imgY, imgWidth * ratio, imgHeight * ratio);
+      pdf.save('mon-cv.pdf');
+
+      // Nettoyage
+      document.body.removeChild(clone);
+      document.body.removeChild(loadingMessage);
+    }).catch(error => {
+      console.error('Erreur lors de la génération du PDF:', error);
+
+      // Nettoyage en cas d'erreur
+      if (document.body.contains(clone)) {
+        document.body.removeChild(clone);
+      }
+      document.body.removeChild(loadingMessage);
+
+      alert("Une erreur est survenue lors de la génération du PDF. Veuillez réessayer.");
+    });
+  };
+// Export DOCX
+  window.generateDOCX = () => {
+    const content = document.getElementById('cvPreview').innerHTML;
+    const turndownService = new TurndownService();
+    const markdown = turndownService.turndown(content);
+
+    const blob = new Blob([markdown], {type: 'text/markdown'});
+    const url = window.URL.createObjectURL(blob);
+
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'mon-cv.doc';
+    a.click();
+
+    window.URL.revokeObjectURL(url);
   };
 
-  try {
-    await html2pdf().set(opt).from(element).save();
-  } catch (error) {
-    console.error('Erreur lors de la génération du PDF:', error);
-  }
-};
-
-// Export DOCX
-window.generateDOCX = () => {
-  const content = document.getElementById('cvPreview').innerHTML;
-  const turndownService = new TurndownService();
-  const markdown = turndownService.turndown(content);
-  
-  // Create a Blob containing the markdown content
-  const blob = new Blob([markdown], { type: 'text/markdown' });
-  const url = window.URL.createObjectURL(blob);
-  
-  // Create a download link and trigger it
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = 'mon-cv.md';
-  a.click();
-  
-  window.URL.revokeObjectURL(url);
-};
-
 // Initialisation
-updatePreview();
+  updatePreview();
+}

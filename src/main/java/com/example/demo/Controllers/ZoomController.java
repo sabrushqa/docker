@@ -10,12 +10,14 @@ import com.example.demo.utils.ZoomApiUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -28,7 +30,7 @@ public class ZoomController {
     private final CandidatRepository candidatRepository;
 
     private final ZoomApiUtil zoomApiUtil;
-    private final com.example.demo.repository.EntretienRepository entretienRepository;
+    private final com.example.demo.Repository.EntretienRepository entretienRepository;
 
     @PostMapping("/sendZoomLink/{candidatureId}")
     public String sendZoomLink(@PathVariable Long candidatureId, Principal principal) {
@@ -85,4 +87,7 @@ public class ZoomController {
     public String handleZoomCallback(@RequestParam("code") String code) {
         return "Authentification Zoom réussie avec le code : " + code;
     }
+
+
+
 }

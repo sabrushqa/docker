@@ -5,6 +5,7 @@ import lombok.Data;
 import org.jetbrains.annotations.NotNull;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "candidatures")
@@ -14,6 +15,8 @@ public class Candidature {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @OneToMany(mappedBy = "candidature", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Entretien> entretiens;
 
     // 🔗 Relation vers l'offre concernée
     @ManyToOne(optional = false)
