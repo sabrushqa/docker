@@ -4,8 +4,10 @@ import jakarta.persistence.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 
 @Entity
 @Table(name = "users")
@@ -18,6 +20,9 @@ public class User implements UserDetails {
     @Column(unique = true, nullable = false)
     private String email;
 
+    @Column(nullable = true)
+    private String resetToken; // Champ pour stocker le jeton de réinitialisation
+
     @Column(nullable = false)
     private String password;
 
@@ -27,10 +32,10 @@ public class User implements UserDetails {
 
     private boolean fromGoogle = false;
 
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY) // ✅ Important
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Candidat candidat;
 
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY) // ✅ Important
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Recruteur recruteur;
 
     // === Implémentation de UserDetails ===
@@ -105,4 +110,19 @@ public class User implements UserDetails {
     public void setRecruteur(Recruteur recruteur) {
         this.recruteur = recruteur;
     }
+
+    // === Ajout des méthodes pour gérer le resetToken ===
+
+    public String getResetToken() {
+        return resetToken;
+    }
+
+    public void setResetToken(String resetToken) {
+        this.resetToken = resetToken;
+    }
+
+    @OneToMany(mappedBy = "candidat", cascade = CascadeType.ALL)
+
+    private List<Favori> favoris = new ArrayList<>();
+
 }

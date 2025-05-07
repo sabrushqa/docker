@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "offres")
@@ -17,6 +18,7 @@ public class Offre {
     private Long id;
 
     private String titre;
+    // Date de création de l'offre
 
     @Column(length = 1000)
     private String description;

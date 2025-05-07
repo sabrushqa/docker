@@ -10,6 +10,6 @@ import java.util.Optional;
 public interface EntretienRepository extends JpaRepository<Entretien, Long> {
     List<Entretien> findByCandidature_Candidat(com.example.demo.model.Candidat candidat);
     List<Entretien> findByCandidature_Offre_Recruteur(Recruteur recruteur);
-
+    List<Entretien> findTop5ByCandidature_Offre_RecruteurOrderByDateEntretienDesc(Recruteur recruteur);
     Optional<Entretien> findByCandidature(Candidature candidature);
 }

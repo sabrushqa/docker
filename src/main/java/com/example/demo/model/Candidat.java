@@ -33,7 +33,8 @@ public class Candidat {
     @JoinColumn(name = "user_id")
     private User user;
 
-    // === Getters & Setters ===
+    @OneToOne(mappedBy = "candidat", cascade = CascadeType.ALL)
+    private Profil profil;
 
     public Long getId() {
         return id;

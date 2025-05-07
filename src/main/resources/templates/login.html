@@ -61,10 +61,14 @@
         <p class="text-blue-200 text-center mb-8 text-lg">Connectez-vous à votre compte</p>
 
         <!-- Login Form -->
+
         <form th:action="@{/login}" method="post" class="space-y-6">
             <!-- Alert Messages -->
-            <div th:if="${param.error}" class="bg-red-500/10 border border-red-500/20 text-red-200 p-4 rounded-xl mb-4 text-center">
+            <div th:if="${param.error} == 'true'" class="bg-red-500/10 border border-red-500/20 text-red-200 p-4 rounded-xl mb-4 text-center">
                 Email ou mot de passe invalide.
+            </div>
+            <div th:if="${param.error} == 'captcha'" class="bg-red-500/10 border border-red-500/20 text-red-200 p-4 rounded-xl mb-4 text-center">
+                Veuillez valider le CAPTCHA pour vous connecter.
             </div>
             <div th:if="${param.logout}" class="bg-green-500/10 border border-green-500/20 text-green-200 p-4 rounded-xl mb-4 text-center">
                 Vous vous êtes déconnecté avec succès.
@@ -115,9 +119,14 @@
                     <a href="/register" class="text-orange-400 hover:text-orange-300 font-medium ml-1 hover:underline transition-colors duration-300">
                         Créez un compte
                     </a>
+
                 </p>
+                <a th:href="@{/password-reset}">Mot de passe oublié ?</a>
             </div>
+            <div class="g-recaptcha" data-sitekey="6LdVOC8rAAAAAIXyAifmoIixbvPqmeHJkVjNq1-Y"></div>
+
         </form>
+
     </div>
 </div>
 
@@ -136,5 +145,6 @@
         cubesContainer.appendChild(cube);
     }
 </script>
+<script src="https://www.google.com/recaptcha/api.js" async defer></script>
 </body>
 </html>

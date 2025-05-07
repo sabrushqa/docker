@@ -1,6 +1,5 @@
 package com.example.demo.Controllers;
-import com.example.demo.service.OffreService;
-import com.example.demo.model.Candidature;
+
 import com.example.demo.model.Offre;
 import com.example.demo.model.Recruteur;
 import com.example.demo.service.OffreService;
@@ -51,14 +50,39 @@ public class OffreController {
         return "redirect:/recruteur/offres/mes-offres";
     }
 
-    private final OffreService OffreService;
+    @GetMapping("/modifier/{id}")
+    public String afficherFormulaireModification(@PathVariable Long id, Model model) {
+        Offre offre = offreService.findById(id)
+                .orElseThrow(() -> new RuntimeException("Offre introuvable"));
+        model.addAttribute("offre", offre);
+        model.addAttribute("secteurs", getSecteurs());
+        return "recruteur/formulaire-offre"; // même formulaire utilisé pour ajout et modif
+    }
+
+    @PostMapping("/modifier/{id}")
+    public String modifierOffre(@PathVariable Long id,
+                                @ModelAttribute Offre offreModifiee,
+                                @AuthenticationPrincipal UserDetails userDetails) {
+        Recruteur recruteur = recruteurService.getRecruteurByEmail(userDetails.getUsername());
+        Offre offreExistante = offreService.findById(id)
+                .orElseThrow(() -> new RuntimeException("Offre introuvable"));
+
+        // Mise à jour des champs
+        offreExistante.setTitre(offreModifiee.getTitre());
+        offreExistante.setLieu(offreModifiee.getLieu());
+        offreExistante.setTypeContrat(offreModifiee.getTypeContrat());
+        offreExistante.setSecteur(offreModifiee.getSecteur());
+
+        offreService.creerOffre(offreExistante, recruteur);
+        return "redirect:/recruteur/offres/mes-offres";
+    }
 
     @GetMapping("/{id}")
     public String afficherDetailOffre(@PathVariable Long id, Model model) {
         Offre offre = offreService.findById(id)
                 .orElseThrow(() -> new RuntimeException("Offre introuvable"));
         model.addAttribute("offre", offre);
-        return "candidat/offre-detail";  // Assure-toi que ce fichier existe dans /templates/candidat
+        return "candidat/offre-detail";
     }
 
     private String[] getSecteurs() {

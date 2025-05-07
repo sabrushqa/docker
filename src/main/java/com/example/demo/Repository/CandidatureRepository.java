@@ -12,6 +12,6 @@ import java.util.List;
 public interface CandidatureRepository extends JpaRepository<Candidature, Long> {
 
     List<Candidature> findByCandidat(Candidat candidat);
-
+    List<Candidature> findTop5ByOffre_RecruteurOrderByDateCandidatureDesc(Recruteur recruteur);
     List<Candidature> findByOffre_Recruteur(Recruteur recruteur);
 }

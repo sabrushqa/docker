@@ -3,6 +3,7 @@ package com.example.demo.Controllers;
 import com.example.demo.model.Candidat;
 import com.example.demo.model.Candidature;
 import com.example.demo.model.Offre;
+import com.example.demo.model.User;
 import com.example.demo.service.CandidatService;
 import com.example.demo.service.CandidatureService;
 import com.example.demo.service.OffreService;

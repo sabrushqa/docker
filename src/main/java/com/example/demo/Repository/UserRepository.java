@@ -8,20 +8,27 @@ import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<User, Long> {
 
-    // Méthode de base
+    // Trouver un utilisateur par son email
     Optional<User> findByEmail(String email);
 
+    // Vérifier si un utilisateur existe avec cet email
     boolean existsByEmail(String email);
 
-    // Chargement explicite de la relation candidat
+    // Trouver un utilisateur avec sa relation "Candidat" (si présente)
     @EntityGraph(attributePaths = {"candidat"})
     Optional<User> findWithCandidatByEmail(String email);
 
-    // Chargement explicite de la relation recruteur
+    // Trouver un utilisateur avec sa relation "Recruteur" (si présente)
     @EntityGraph(attributePaths = {"recruteur"})
     Optional<User> findWithRecruteurByEmail(String email);
 
-    // Chargement des deux relations
+    // Trouver un utilisateur avec ses relations "Candidat" et "Recruteur"
     @EntityGraph(attributePaths = {"candidat", "recruteur"})
     Optional<User> findWithRolesByEmail(String email);
+
+    // Vérifier si un utilisateur existe avec un jeton de réinitialisation
+    boolean existsByResetToken(String resetToken);
+
+    // Trouver un utilisateur en fonction de son jeton de réinitialisation
+    Optional<User> findByResetToken(String resetToken);
 }

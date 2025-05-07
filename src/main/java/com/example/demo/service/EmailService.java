@@ -66,4 +66,27 @@ public class EmailService {
 
         sendEmail(to, subject, htmlBody);
     }
+    public void sendPasswordResetEmail(String to, String resetToken) throws MessagingException {
+        logger.info("Envoi de l'email de réinitialisation du mot de passe à: {}", to);
+        String subject = "Réinitialisation de votre mot de passe";
+
+        // ✅ URL corrigée pour correspondre à celle du contrôleur
+        String resetLink = "http://localhost:8080/password-reset-form?token=" + resetToken;
+
+        String htmlBody =
+                "<html>" +
+                        "<body>" +
+                        "<h2>Réinitialisation de mot de passe</h2>" +
+                        "<p>Bonjour,</p>" +
+                        "<p>Vous avez demandé à réinitialiser votre mot de passe. Cliquez sur le lien ci-dessous pour définir un nouveau mot de passe :</p>" +
+                        "<p><a href='" + resetLink + "'>Réinitialiser mon mot de passe</a></p>" +
+                        "<p>Si vous n'avez pas demandé cette réinitialisation, ignorez cet e-mail.</p>" +
+                        "<p>Cordialement,<br>L'équipe de support</p>" +
+                        "</body>" +
+                        "</html>";
+
+        sendEmail(to, subject, htmlBody);
+    }
+
+
 }
