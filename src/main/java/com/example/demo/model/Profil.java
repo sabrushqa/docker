@@ -16,6 +16,9 @@ public class Profil {
     private Long id;
 
     private String bio;
+    @Column(name = "photo")
+    private String photo;  // Peut contenir le nom du fichier ou un chemin relatif
+
 
     @OneToOne
     @JoinColumn(name = "candidat_id")

@@ -33,6 +33,7 @@ public class CandidatController {
         return "candidat/home";
     }
 
+
     // Affichage de toutes les offres
     @GetMapping("/candidat/offres")
     public String afficherToutesLesOffres(Model model) {

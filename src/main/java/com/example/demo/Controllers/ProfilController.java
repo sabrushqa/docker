@@ -7,8 +7,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.security.Principal;
 
 @Controller
@@ -21,7 +26,6 @@ public class ProfilController {
     @Autowired
     private CandidatRepository candidatRepository;
 
-
     @GetMapping
     public String afficherProfil(Model model, Principal principal) {
         Candidat candidat = candidatRepository.findByUserEmail(principal.getName())
@@ -31,8 +35,8 @@ public class ProfilController {
         if (profil == null) {
             profil = new Profil();
             profil.setCandidat(candidat);
-            candidat.setProfil(profil);  // attacher le profil au candidat
-            profilService.sauvegarderProfil(profil); // à créer si pas déjà fait
+            candidat.setProfil(profil);
+            profilService.sauvegarderProfil(profil);
         }
 
         model.addAttribute("profil", profil);
@@ -43,6 +47,33 @@ public class ProfilController {
         return "candidat/profil";
     }
 
+    @PostMapping("/photo")
+    public String uploadPhoto(@RequestParam("photo") MultipartFile file, Principal principal, RedirectAttributes redirect) {
+        if (file.isEmpty()) {
+            redirect.addFlashAttribute("error", "Aucune photo sélectionnée.");
+            return "redirect:/candidat/profil";
+        }
+
+        try {
+            String uploadDir = "src/main/resources/static/uploads/";
+            String fileName = System.currentTimeMillis() + "_" + file.getOriginalFilename();
+            Path path = Paths.get(uploadDir + fileName);
+            Files.createDirectories(path.getParent());
+            Files.write(path, file.getBytes());
+
+            Profil profil = profilService.getProfilByEmail(principal.getName())
+                    .orElseThrow(() -> new RuntimeException("Profil non trouvé"));
+            profil.setPhoto(fileName);
+            profilService.sauvegarderProfil(profil);
+
+            redirect.addFlashAttribute("success", "Photo mise à jour !");
+        } catch (IOException e) {
+            e.printStackTrace();
+            redirect.addFlashAttribute("error", "Erreur lors de l'envoi de la photo.");
+        }
+
+        return "redirect:/candidat/profil";
+    }
 
     // Expérience
     @PostMapping("/experience/ajouter")
