@@ -536,50 +536,15 @@
             </div>
         </div>
     </div>
-    <div class="section-container fade-in animate-delay-1">
-        <div class="d-flex align-items-center mb-4">
-            <div class="profile-section-icon">
-                <i class="fas fa-user"></i>
-            </div>
-            <h3 class="section-title mb-0">Biographie</h3>
-        </div>
-
-        <!-- Affichage de la bio s'il y en a une -->
-        <div th:if="${profil.bio != null and !profil.bio.isEmpty()}" class="card mb-4 slide-in">
-            <div class="card-header d-flex justify-content-between align-items-center">
-                <h5 class="mb-0">À propos de moi</h5>
-                <div class="action-buttons">
-                    <button class="btn btn-outline-primary btn-sm action-button" data-bs-toggle="modal" data-bs-target="#editBio">
-                        <i class="fas fa-edit"></i>Modifier
-                    </button>
-                    <form th:action="@{/candidat/profil/bio/supprimer}" method="post" class="d-inline">
-                        <button class="btn btn-outline-danger btn-sm action-button">
-                            <i class="fas fa-trash-alt"></i>Supprimer
-                        </button>
-                    </form>
+    <div class="card mt-3">
+        <div class="card-header">Bio</div>
+        <div class="card-body">
+            <form th:action="@{/candidat/profil/bio/modifier}" method="post">
+                <div class="mb-3">
+                    <textarea name="bio" class="form-control" rows="4" th:text="${profil.bio}">Votre bio ici...</textarea>
                 </div>
-            </div>
-            <div class="card-body">
-                <p th:text="${profil.bio}">Votre biographie apparaît ici...</p>
-            </div>
-        </div>
-
-        <!-- Formulaire d'ajout s'il n'y a pas de bio -->
-        <div th:if="${profil.bio == null or profil.bio.isEmpty()}" class="card mb-4 slide-in">
-            <div class="card-header">
-                <h5 class="mb-0">Ajoutez votre biographie</h5>
-            </div>
-            <div class="card-body">
-                <form th:action="@{/candidat/profil/bio/ajouter}" method="post">
-                    <div class="mb-3">
-                        <label for="bio" class="form-label">Parlez de vous, de votre parcours et de vos objectifs professionnels</label>
-                        <textarea id="bio" name="bio" class="form-control" rows="5" placeholder="Décrivez votre parcours, vos compétences et vos objectifs professionnels..."></textarea>
-                    </div>
-                    <button type="submit" class="btn btn-success">
-                        <i class="fas fa-save me-2"></i>Enregistrer ma biographie
-                    </button>
-                </form>
-            </div>
+                <button type="submit" class="btn btn-primary">Mettre à jour</button>
+            </form>
         </div>
     </div>
 

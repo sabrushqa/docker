@@ -1,6 +1,7 @@
 package com.example.demo.config;
 
 import com.example.demo.service.CustomUserDetailsService;
+import com.example.demo.utils.CaptchaFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,6 +13,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -20,32 +22,33 @@ public class SecurityConfig {
 
     private final CustomUserDetailsService customUserDetailsService;
 
-    /**
-     * Encoder pour les mots de passe
-     */
+
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
-    /**
-     * Fournit le AuthenticationManager à partir de la configuration
-     */
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();
     }
 
-    /**
-     * Définition de la stratégie de sécurité de l'application
-     */
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
+
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/register/", "/login", "/css/", "/js/", "/images/").permitAll()
+                        .requestMatchers(
+                                "/register/**",
+                                "/login",
+                                "/password-reset",
+                                "/password-reset-form",
+                                "/css/**",
+                                "/js/**",
+                                "/images/**"
+                        ).permitAll()
                         .requestMatchers("/home").hasRole("CANDIDAT")
-                        .requestMatchers("/recruteur/").hasRole("RECRUTEUR")
+                        .requestMatchers("/recruteur/**").hasRole("RECRUTEUR")
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
@@ -62,14 +65,12 @@ public class SecurityConfig {
                         .logoutSuccessUrl("/login?logout=true")
                         .permitAll()
                 )
-                .userDetailsService(customUserDetailsService);
+                .userDetailsService(customUserDetailsService)
+                .csrf(csrf -> csrf.disable());
 
         return http.build();
     }
 
-    /**
-     * Déclare le service de récupération des détails utilisateur
-     */
     @Bean
     public UserDetailsService userDetailsService() {
         return customUserDetailsService;

@@ -5,7 +5,6 @@ import com.example.demo.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.client.RestTemplate;
 
 import java.util.Optional;
 
@@ -27,9 +26,6 @@ public class ProfilService {
         return candidatRepository.findByUserEmail(email)
                 .flatMap(candidat -> profilRepository.findByCandidatId(candidat.getId()));
     }
-    // Nouvelle méthode pour récupérer le profil par l'ID du candidat
-    public Optional<Profil> getProfilByCandidatId(Long candidatId) {
-        return profilRepository.findByCandidatId(candidatId);}
 
     @Transactional
     public Profil creerProfil(Profil profil, String email) {
@@ -171,31 +167,11 @@ public class ProfilService {
         langue.getProfil().getLangues().remove(langue);
         langueRepository.delete(langue);
     }
-
-        private final String FLASK_API_URL = "http://localhost:5000/recommandations";  // URL de l'API Flask
-
-        // Convertir le profil du candidat en texte structuré
-        public String getProfilText(Candidat candidat) {
-            // Créer une chaîne de caractères avec les informations du profil
-            StringBuilder profilText = new StringBuilder();
-            profilText.append("Nom: ").append(candidat.getNom()).append(" ").append(candidat.getPrenom())
-                    .append("\nDescription: ").append(candidat.getDescription())
-                    .append("\nFormation: ").append(candidat.getFormation())
-                    .append("\nDiplôme: ").append(candidat.getDiplome())
-                    .append("\nSpécialité: ").append(candidat.getSpecialite());
-
-            // Ajouter les expériences, formations et langues
-            // Vous ajouterez ici la logique pour ajouter des expériences, formations, etc.
-
-            return profilText.toString();
-        }
-
-        // Appeler l'API Flask pour obtenir les offres recommandées
-        public String getOffresRecommandées(String profilText) {
-            RestTemplate restTemplate = new RestTemplate();
-            String response = restTemplate.postForObject(FLASK_API_URL, profilText, String.class);
-            return response;  // Les offres recommandées seront renvoyées ici
-        }
+    public void modifierBio(String email, String bio) {
+        Profil profil = getProfilByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Profil non trouvé"));
+        profil.setBio(bio);
+        sauvegarderProfil(profil);
     }
 
-
+}
