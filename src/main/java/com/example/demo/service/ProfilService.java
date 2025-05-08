@@ -27,6 +27,9 @@ public class ProfilService {
         return candidatRepository.findByUserEmail(email)
                 .flatMap(candidat -> profilRepository.findByCandidatId(candidat.getId()));
     }
+    // Nouvelle méthode pour récupérer le profil par l'ID du candidat
+    public Optional<Profil> getProfilByCandidatId(Long candidatId) {
+        return profilRepository.findByCandidatId(candidatId);}
 
     @Transactional
     public Profil creerProfil(Profil profil, String email) {

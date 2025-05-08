@@ -21,6 +21,7 @@ public class CandidatService {
                 .orElseThrow(() -> new RuntimeException("Candidat introuvable avec cet email : " + email));
     }
 
+
     public List<Candidature> getCandidaturesByCandidat(Candidat candidat) {
         return candidatureRepository.findByCandidat(candidat);
     }
