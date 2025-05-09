@@ -41,4 +41,16 @@ public class Offre {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "recruteur_id")
     private Recruteur recruteur;
+    // Ajouter ce champ transcient à la classe Offre
+    @Transient
+    private double matchScore;
+
+    public double getMatchScore() {
+        return matchScore;
+    }
+
+
+    public void setMatchScore(double matchScore) {
+        this.matchScore = matchScore;
+    }
 }
