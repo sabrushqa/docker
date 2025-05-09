@@ -41,12 +41,14 @@ public class Candidature {
     @Column(length = 5000)
     private String lettreMotivation;
 
-    // 📎 URL ou chemin du CV
-    private String cvUrl;
+    @Column(columnDefinition = "text")
+    private String cv;
 
+    @Column(name = "cv_url", columnDefinition = "text")
+    private String cvUrl;
     // 🤖 Score IA de correspondance entre candidat et offre (calcul automatique)
     private Double matchingScore;
-    private String cv;
+
 
     // 📅 Date et heure de l'entretien
     private LocalDateTime dateEntretien;
